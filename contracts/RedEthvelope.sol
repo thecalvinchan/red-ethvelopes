@@ -13,11 +13,11 @@ contract ERC721Meta {
 contract RedEthvelope is ERC721Token, ERC721Meta, Ownable {
   using strings for *;
 
-  string private metadataUrl;
+  string private metadataHostUrl;
   uint256 private costInWei;
 
   function RedEthvelope(string _url, uint256 _costInWei) public {
-    metadataUrl = _url;
+    metadataHostUrl = _url;
     costInWei = _costInWei;
   }
 
@@ -26,12 +26,21 @@ contract RedEthvelope is ERC721Token, ERC721Meta, Ownable {
   }
 
   function changeMetadataUrl(string _url) public onlyOwner {
-    metadataUrl = _url;
+    metadataHostUrl = _url;
   }
 
+  // Keeps track of ETH balance in each ethvelope
   mapping(uint256 => uint256) tokenIdToWei;
 
+  // Keeps track of ETH balance owner is allowed to withdraw
   uint256 private ownerBalance;
+
+  // Withdraws wei as owner
+  function withdrawAsOwner(uint256 _wei) public onlyOwner {
+    require(_wei <= ownerBalance);
+    ownerBalance -= _wei;
+    msg.sender.transfer(_wei);
+  }
 
   // Initially used an array of Structs but
   // We don't really care about anything except the 8 bits representing an Ethvelope
@@ -49,15 +58,7 @@ contract RedEthvelope is ERC721Token, ERC721Meta, Ownable {
     return id;
   }
 
-  function createAndSendEthvelope(address _to) public {
-    require(msg.value >= costInWei);
-    require(msg.sender != _to);
-    ownerBalance += 1 finney;
-    uint256 memory id = _createEthvelope(randomGen(msg.value), _to);
-    deposit(id, msg.value - 1 finney);
-    return tokenMetadata(id);
-  }
-
+  // Ethvelopes are reusable. Therefore, owner of ethvelope can deposit more ETH if desired
   function deposit(uint256 _tokenId, uint256 _amountInWei) public onlyOwnerOf(_tokenId) {
     tokenIdToWei[_tokenId] += +_amountInWei;
   }
@@ -69,7 +70,17 @@ contract RedEthvelope is ERC721Token, ERC721Meta, Ownable {
   }
 
   function tokenMetadata(uint256 _tokenId) public view returns (string infoUrl) {
-    return metadataUrl.toSlice().concat(bytes32(redEthvelopes[_tokenId]));
+    return metadataHostUrl.toSlice().concat(bytes32(redEthvelopes[_tokenId]));
   }
+
+  function createAndSendEthvelope(address _to) public {
+    require(msg.value >= costInWei);
+    require(msg.sender != _to);
+    ownerBalance += 1 finney;
+    uint256 memory id = _createEthvelope(randomGen(msg.value), _to);
+    deposit(id, msg.value - 1 finney);
+    return tokenMetadata(id);
+  }
+
 
 }
