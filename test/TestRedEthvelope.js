@@ -26,16 +26,19 @@ contract('RedEthvelope', async (accounts) => {
         const costInWei = await redEthvelope.costInWei.call();
         assert.equal(costInWei.toNumber(), 1, 'Cost in wei is 1 wei.');
       });
+
       it('should allow owner to change metadataUrl', async () => {
         await redEthvelope.changeMetadataUrl('http://127.0.0.1:1234/', {from: owner});
         const metadataHostUrl = await redEthvelope.metadataHostUrl.call();
         assert.equal(metadataHostUrl.toString(), 'http://127.0.0.1:1234/', 'metadataHostUrl is changed');
       });
     });
+
     context('not as contract owner', () => {
       it('should not allow user to change costInWei', async () => {
         await expectError(redEthvelope.changeCostInWei(1, {from: recipient}));
       });
+
       it('should not allow user to change metadataUrl', async () => {
         await expectError(redEthvelope.changeMetadataUrl('http://127.0.0.1:1234', {from: recipient}));
       });
@@ -64,18 +67,28 @@ contract('RedEthvelope', async (accounts) => {
   });
 
 	context('withdrawals', () => {
-		it('allows ethvelope owners to withdraw funds', async () => {
-			await redEthvelope.withdraw(0, 4000, {from: recipient});
-		});
+    context('as ethvelope owner', () => {
+      it('allows ethvelope owners to withdraw funds', async () => {
+        await redEthvelope.withdraw(0, 4000, {from: recipient});
+      });
 
-		it('does not allow ethvelope owners withdraw more funds than in ethvelope', async () => {
-			await expectError(redEthvelope.withdraw(0, 2*finney, {from: recipient}));
-		});
+      it('changes ethvelope balance after withdrawal', async () => {
+        const tokenBalance = await redEthvelope.tokenIdToWei(0);
+        assert.equal(tokenBalance.toNumber(), 2*finney-1-4000, 'Token balance is original deposit - fee - withdrawal');
+      });
 
-		it('does not allow accounts to withdraw funds from ethvelopes they do not own', async () => {
-			await expectError(redEthvelope.withdraw(0, 9999, {from: owner}));
-		});
+      it('does not allow ethvelope owners withdraw more funds than in ethvelope', async () => {
+        await expectError(redEthvelope.withdraw(0, 2*finney, {from: recipient}));
+      });
+    });
+
+    context('as other user', () => {
+      it('does not allow accounts to withdraw funds from ethvelopes they do not own', async () => {
+        await expectError(redEthvelope.withdraw(0, 9999, {from: owner}));
+      });
+    });
 	});
+
 })
 
 async function expectError(promise) {
