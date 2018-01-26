@@ -89,6 +89,23 @@ contract('RedEthvelope', async (accounts) => {
     });
 	});
 
+  context('deposits', () => {
+    context('as ethvelope owner', () => {
+      it('allows deposit of funds', async () => {
+        await redEthvelope.deposit(0, {value: 4000, from: recipient});
+      });
+      it('changes ethvelope balance to reflect deposit', async () => {
+        const tokenBalance = await redEthvelope.tokenIdToWei(0);
+        assert.equal(tokenBalance.toNumber(), 2*finney - 2, 'Token balance is original deposit - fee - withdrawal + deposit - fee');
+      });
+    });
+    context('as other user', () => {
+      it('does not allow deposit of funds', async () => {
+        await expectError(redEthvelope.deposit(0, {value: 1234, from: owner}));
+      });
+    });
+  });
+
 })
 
 async function expectError(promise) {
