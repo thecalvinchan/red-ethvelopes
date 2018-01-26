@@ -12,7 +12,7 @@ contract TestRedEthvelope {
   }
 
   function testConstructor() {
-    Assert.equal(redEthvelope.ownerBalance(), 0, "ownerbalance should be 0 initially");
-    Assert.equal(redEthvelope.costInWei(), 999, "Cost In Wei should be 999 wei initially");
+    Assert.equal(redEthvelope.ownerBalance(), 0, "Owner Balance should be 0 initially");
+    Assert.equal(redEthvelope.costInWei(), 1 finney, "Cost In Wei should be 1 finney initially");
   }
 }

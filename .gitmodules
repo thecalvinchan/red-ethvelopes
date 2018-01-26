@@ -1,6 +1,3 @@
-[submodule "contracts/vendors/solidity-stringutils"]
-	path = contracts/vendors/solidity-stringutils
-	url = https://github.com/Arachnid/solidity-stringutils.git
 [submodule "contracts/vendors/zeppelin-solidity"]
 	path = contracts/vendors/zeppelin-solidity
 	url = https://github.com/facuspagnuolo/zeppelin-solidity.git
