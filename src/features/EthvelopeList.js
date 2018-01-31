@@ -7,6 +7,7 @@ class EthvelopeList extends Component {
     if (!this.props.redEthvelope) {
       this.props.fetchRedEthvelope();
     }
+    console.log(!this.props.redEthvelope);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -14,13 +15,9 @@ class EthvelopeList extends Component {
   }
 
   render () {
-    if (this.props.redEthvelope) {
-      console.log(this.props.redEthvelope.owner.call());
-    }
     return (
       <div>
         hello
-        {this.props.redEthvelope}
       </div>
     );
   }
@@ -32,7 +29,7 @@ const fetchRedEthvelope = () => ({
 
 export default connect((state, ownProps) => {
   return {
-    redEthvelope: state.redEthevelope,
+    redEthvelope: state.redEthvelope,
     random: 1
   }
 }, {

@@ -15,7 +15,7 @@ import { put, takeLatest } from 'redux-saga/effects';
 import RedEthvelopeContract from '../build/contracts/RedEthvelope.json';
 import contract from 'truffle-contract';
 
-function* fetchRedEthvelope (action) {
+function* fetchRedEthvelope(action) {
   try {
     const RedEthvelope = contract(RedEthvelopeContract);
     const { web3 } = window;
@@ -43,7 +43,7 @@ const sagaMiddleware = createSagaMiddleware();
  *
  **/
 
-const redEthvelope = (state = {}, action) => {
+const redEthvelope = (state = null, action) => {
   switch (action.type) {
     case 'CONTRACT_DEPLOYED':
       return action.instance;
@@ -58,7 +58,7 @@ const rootReducer = combineReducers({
 
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
 store.subscribe(() => {
-  console.log(store.getState());
+  console.log("STORE STATE CHANGED", store.getState());
 });
 
 sagaMiddleware.run(redEthvelopeSaga);
