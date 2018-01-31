@@ -2,9 +2,8 @@ pragma solidity ^0.4.18;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./vendors/ethereum-string-utils/contracts/StringLib.sol";
-// Uses OpenZeppelin wip ERC721 implementation
-// https://github.com/OpenZeppelin/zeppelin-solidity/pull/683
-import "./vendors/zeppelin-solidity/contracts/token/ERC721Token.sol";
+// Uses OpenZeppelin ERC721 implementation
+import "zeppelin-solidity/contracts/token/ERC721/ERC721Token.sol";
 
 contract ERC721Meta {
   function tokenMetadata(uint256 _tokenId) public view returns (string infoUrl);
@@ -152,7 +151,7 @@ contract RedEthvelope is ERC721Token, ERC721Meta, Ownable {
 
   function _createEthvelope(uint8 _dna, address _owner) private returns (uint256 ethvelopeId) {
     uint256 id = redEthvelopes.push(_dna) - 1;
-    mint(_owner, id);
+    _mint(_owner, id);
     return id;
   }
 
