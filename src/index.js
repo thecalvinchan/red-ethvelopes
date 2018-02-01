@@ -10,26 +10,9 @@ import { Web3Provider } from 'react-web3';
 import { applyMiddleware, createStore, combineReducers } from 'redux'; 
 
 import createSagaMiddleware from 'redux-saga';
-import { put, takeLatest } from 'redux-saga/effects';
 
-import RedEthvelopeContract from '../build/contracts/RedEthvelope.json';
-import contract from 'truffle-contract';
-
-function* fetchRedEthvelope(action) {
-  try {
-    const RedEthvelope = contract(RedEthvelopeContract);
-    const { web3 } = window;
-    RedEthvelope.setProvider(web3.currentProvider);
-    const instance = yield RedEthvelope.deployed();
-    yield put({type: 'CONTRACT_DEPLOYED', instance});
-  } catch(e) {
-    yield put({type: 'CONTRACT_ERROR'});
-  }
-};
-
-function* redEthvelopeSaga () {
-  yield takeLatest('CONTRACT_FETCH', fetchRedEthvelope);
-};
+import contractSaga from './sagas/contractSaga';
+import ethvelopesSaga from './sagas/ethvelopesSaga';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -38,12 +21,15 @@ const sagaMiddleware = createSagaMiddleware();
  * store schema
  *
  * {
- *  redEthvelope
+ *  redEthvelopeContract: instanceOf RedEthvelopeContract
+ *  ethvelopes: {
+ *    address account => [ethvelopes]
+ *  }
  * }
  *
  **/
 
-const redEthvelope = (state = null, action) => {
+const redEthvelopeContract = (state = null, action) => {
   switch (action.type) {
     case 'CONTRACT_DEPLOYED':
       return action.instance;
@@ -52,16 +38,52 @@ const redEthvelope = (state = null, action) => {
   }
 }
 
-const rootReducer = combineReducers({
-  redEthvelope
+const ethvelopes = (state = {}, action) => {
+  switch (action.type) {
+    case 'FETCH_ETHVELOPES_SUCCESS':
+      return {
+        ...state,
+        [action.account]: action.ethvelopes
+      }
+    default:
+      return state;
+  }
+}
+
+const selectedAccount = (state = null, action) => {
+  switch (action.type) {
+    case 'web3/RECEIVE_ACCOUNT':
+    case 'web3/CHANGE_ACCOUNT':
+      return action.address;
+    default:
+      return state;
+  }
+}
+
+const appReducer = combineReducers({
+  redEthvelopeContract,
+  ethvelopes,
+  selectedAccount
 });
+
+const rootReducer = (state, action) => {
+  if (action.type === 'CHANGE_NETWORK') {
+    appReducer({
+      redEthvelopeContract: null,
+      ethvelopes: {},
+      selectedAccount: null
+    }, {});
+  }
+  return appReducer(state, action);
+}
 
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
 store.subscribe(() => {
   console.log("STORE STATE CHANGED", store.getState());
 });
 
-sagaMiddleware.run(redEthvelopeSaga);
+sagaMiddleware.run(contractSaga, store);
+sagaMiddleware.run(ethvelopesSaga, store);
 
 const WrappedApp = () => (
   <Provider store={store}>

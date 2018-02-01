@@ -1,37 +1,73 @@
 import React, { Component } from 'react';
-
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+import Ethvelope from './Ethvelope/Ethvelope';
+
+import { fetchRedEthvelopeContract, fetchEthvelopes } from './actions';
+
 class EthvelopeList extends Component {
-  componentWillMount() {
-    if (!this.props.redEthvelope) {
-      this.props.fetchRedEthvelope();
+  constructor() {
+    super();
+    this.state = {
+      ethvelopes: null
     }
-    console.log(!this.props.redEthvelope);
+  }
+  componentWillMount() {
+    if (!this.props.redEthvelopeContract) {
+      this.props.fetchRedEthvelopeContract();
+    }
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps);
-  }
-
-  render () {
-    return (
-      <div>
-        hello
-      </div>
-    );
+  render() {
+    const { redEthvelopeContract } = this.props;
+    if (redEthvelopeContract !== null) {
+      const { ethvelopes, selectedAccount, fetchEthvelopes } = this.props;
+      const ethvelopesForAccount = ethvelopes[selectedAccount];
+      if (ethvelopesForAccount === undefined) {
+        fetchEthvelopes(redEthvelopeContract, this.context.web3.selectedAccount);
+        return (
+          <div>
+            loading ethvelopes...
+          </div>
+        );
+      } else if (ethvelopesForAccount.length <= 0) {
+        return (
+          <div>
+            You have no ethvelopes.
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            Ethvelopes
+            { ethvelopesForAccount.map((ethvelopeId) => (
+              <Ethvelope id={ethvelopeId.toNumber()} />
+            ))}
+          </div>
+        );
+      }
+    } else {
+      return (
+        <div>
+          Contract not loaded
+        </div>
+      );
+    }
   }
 }
 
-const fetchRedEthvelope = () => ({
-  type: 'CONTRACT_FETCH'
-});
+EthvelopeList.contextTypes = {
+  web3: PropTypes.object
+}
 
 export default connect((state, ownProps) => {
   return {
-    redEthvelope: state.redEthvelope,
-    random: 1
+    redEthvelopeContract: state.redEthvelopeContract,
+    ethvelopes: state.ethvelopes,
+    selectedAccount: state.selectedAccount
   }
 }, {
-  fetchRedEthvelope
+  fetchRedEthvelopeContract,
+  fetchEthvelopes
 })(EthvelopeList);
