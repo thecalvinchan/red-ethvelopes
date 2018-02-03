@@ -9,3 +9,11 @@ export const fetchEthvelopes = (contract, account) => {
     account
   }
 };
+
+export const fetchEthvelope = (contract, id) => {
+  return {
+    type: 'FETCH_ETHVELOPE',
+    contract,
+    id
+  }
+};

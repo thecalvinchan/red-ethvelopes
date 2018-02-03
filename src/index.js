@@ -13,6 +13,7 @@ import createSagaMiddleware from 'redux-saga';
 
 import contractSaga from './sagas/contractSaga';
 import ethvelopesSaga from './sagas/ethvelopesSaga';
+import ethvelopeSaga from './sagas/ethvelopeSaga';
 
 const sagaMiddleware = createSagaMiddleware();
 
@@ -38,7 +39,7 @@ const redEthvelopeContract = (state = null, action) => {
   }
 }
 
-const ethvelopes = (state = {}, action) => {
+const accountEthvelopes = (state = {}, action) => {
   switch (action.type) {
     case 'FETCH_ETHVELOPES_SUCCESS':
       return {
@@ -60,16 +61,34 @@ const selectedAccount = (state = null, action) => {
   }
 }
 
+const ethvelopes = (state = {}, action) => {
+  console.log(action);
+  switch (action.type) {
+    case 'FETCH_ETHVELOPE_SUCCESS':
+      return {
+        ...state,
+        [action.id] : {
+          balance: action.balance,
+          metadataUrl: action.metadataUrl
+        }
+      };
+    default:
+      return state;
+  }
+}
+
 const appReducer = combineReducers({
   redEthvelopeContract,
-  ethvelopes,
-  selectedAccount
+  accountEthvelopes,
+  selectedAccount,
+  ethvelopes
 });
 
 const rootReducer = (state, action) => {
   if (action.type === 'CHANGE_NETWORK') {
     appReducer({
       redEthvelopeContract: null,
+      accountEthvelopes: {},
       ethvelopes: {},
       selectedAccount: null
     }, {});
@@ -84,6 +103,7 @@ store.subscribe(() => {
 
 sagaMiddleware.run(contractSaga, store);
 sagaMiddleware.run(ethvelopesSaga, store);
+sagaMiddleware.run(ethvelopeSaga);
 
 const WrappedApp = () => (
   <Provider store={store}>

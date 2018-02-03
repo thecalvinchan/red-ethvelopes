@@ -15,9 +15,12 @@ class SendEthvelope extends Component {
   render() {
     return (
       <div>
-        <label for="address">Recipient ETH Address:</label>
-        <input name="address" value={this.state.address} onChange={this.handleChange}/>
-        <button onClick={this.props.sendEthvelope(this.state.address)}>Send</button>
+        <label htmlFor="address">Send Ethvelope</label>
+        <br/>
+				<div className="Ethvelope-form">
+					<input name="address" value={this.state.address} onChange={this.handleChange} placeholder="0x627306090abaB3A6e1400e9345bC60c78a8BEf57"/>
+					<button onClick={this.props.sendEthvelope(this.state.address)}>Send</button>
+				</div>
       </div>
     );
   }

@@ -1,0 +1,34 @@
+.CreateAndSendEthvelope {
+	margin-bottom: 25px;
+}
+
+.CreateAndSendEthvelope-label {
+  text-align: right;
+}
+
+.CreateAndSendEthvelope-input {
+	width: 100%;
+  text-align: left;
+}
+
+.CreateAndSendEthvelope-form{
+	padding: 50px; 
+}
+
+.CreateAndSendEthvelope-form__sending { 
+	padding: 50px; 
+	background-color: #F0FF99;	
+	color: #8C5B00;
+}
+
+.CreateAndSendEthvelope-form__success {
+	padding: 50px; 
+	background-color: #88FF8B;	
+	color: #005909;
+}
+
+.CreateAndSendEthvelope-form__error{
+	padding: 50px; 
+	background-color: #FF857E;	
+	color: #C60000;
+}

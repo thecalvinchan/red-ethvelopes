@@ -2,10 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { fetchRedEthvelopeContract } from '../actions';
+import { fetchRedEthvelopeContract, fetchEthvelope } from '../actions';
+
+import './Ethvelope.css';
 
 import SendEthvelope from './SendEthvelope';
 import WithdrawEthvelope from './WithdrawEthvelope';
+
+import { convertEtherToWei, convertWeiToEther } from '../../helpers/EtherUnitConversionHelper';
 
 const STATUS_NOT_FETCHED = 'NOT_FETCHED';
 const STATUS_FETCHED = 'FETCHED';
@@ -28,24 +32,6 @@ class Ethvelope extends Component {
     }
   }
 
-  fetchEthvelope = async () => {
-    const { id, redEthvelopeContract } = this.props;
-    try {
-      const balance = await redEthvelopeContract.tokenIdToWei.call(id);
-      const metadataUrl = await redEthvelopeContract.tokenMetadata.call(id);
-      this.setState({
-        status: STATUS_FETCHED,
-        balance: balance.toNumber(),
-        metadataUrl: metadataUrl.toString()
-      });
-    } catch (e) {
-      this.setState({
-        status: STATUS_FAILURE,
-        error: e
-      });
-    }
-  }
-
   sendEthvelope = (toAddress) => {
     return async () => {
       const { id, redEthvelopeContract } = this.props;
@@ -64,7 +50,8 @@ class Ethvelope extends Component {
     };
   }
 
-  withdrawEthvelope = (amountInWei) => {
+  withdrawEthvelope = (amountInEth) => {
+    const amountInWei = convertEtherToWei(amountInEth);
     return async () => { 
       try {
         const { id, redEthvelopeContract } = this.props;
@@ -83,30 +70,33 @@ class Ethvelope extends Component {
   }
 
   render() {
-    const { redEthvelopeContract } = this.props;
+    const { redEthvelopeContract, ethvelope, id } = this.props;
     if (redEthvelopeContract !== null) {
-      if (this.state.status === 'NOT_FETCHED') {
-        this.fetchEthvelope();
+      if (!ethvelope) {
+        this.props.fetchEthvelope(redEthvelopeContract, id);
         return (
-          <h1>Loading</h1>
+          <div>
+            <h3>Loading</h3>
+          </div>
         )
       } else {
         return (
-          <div>
-            {this.state.balance} 
-            {this.state.metadataUrl}
-            {this.state.status}
-            <SendEthvelope sendEthvelope={this.sendEthvelope} />
-            <WithdrawEthvelope withdrawEthvelope={this.withdrawEthvelope} />
+          <div className="Ethvelope">
+            <img className="Ethvelope-image" src={ethvelope.metadataUrl.toString()} />
+            <br/>
+            <div className="Ethvelope-actions">
+							<p><strong>Balance:</strong> <code>{convertWeiToEther(ethvelope.balance.toNumber())} ETH</code></p>
+							<br/>
+              <SendEthvelope sendEthvelope={this.sendEthvelope} />
+							<br/>
+              <WithdrawEthvelope withdrawEthvelope={this.withdrawEthvelope} />
+            </div>
           </div>
         );
       }
     } else {
-      return (
-        <div>
-          Ethvelope ID: {this.props.id} 
-        </div>
-      );
+      // This should never be reached
+      return null;
     }
   }
 }
@@ -118,8 +108,10 @@ Ethvelope.contextTypes = {
 export default connect((state, ownProps) => (
   {
     redEthvelopeContract: state.redEthvelopeContract,
+    ethvelope: state.ethvelopes[ownProps.id],
     ...ownProps
   }
 ), {
-  fetchRedEthvelopeContract
+  fetchRedEthvelopeContract,
+  fetchEthvelope
 })(Ethvelope);

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Grid, Col, Row } from 'react-flexbox-grid';
 
 import Ethvelope from './Ethvelope/Ethvelope';
 
@@ -13,6 +14,7 @@ class EthvelopeList extends Component {
       ethvelopes: null
     }
   }
+
   componentWillMount() {
     if (!this.props.redEthvelopeContract) {
       this.props.fetchRedEthvelopeContract();
@@ -22,29 +24,41 @@ class EthvelopeList extends Component {
   render() {
     const { redEthvelopeContract } = this.props;
     if (redEthvelopeContract !== null) {
-      const { ethvelopes, selectedAccount, fetchEthvelopes } = this.props;
-      const ethvelopesForAccount = ethvelopes[selectedAccount];
+      const { accountEthvelopes, selectedAccount, fetchEthvelopes } = this.props;
+      const ethvelopesForAccount = accountEthvelopes[selectedAccount];
       if (ethvelopesForAccount === undefined) {
         fetchEthvelopes(redEthvelopeContract, this.context.web3.selectedAccount);
         return (
           <div>
-            loading ethvelopes...
+            Loading Ethvelopes...
           </div>
         );
       } else if (ethvelopesForAccount.length <= 0) {
         return (
           <div>
-            You have no ethvelopes.
+            <h2>You have no ethvelopes</h2>
           </div>
         );
       } else {
         return (
-          <div>
-            Ethvelopes
-            { ethvelopesForAccount.map((ethvelopeId) => (
-              <Ethvelope id={ethvelopeId.toNumber()} />
-            ))}
-          </div>
+          <Grid>
+						<Row>
+							<Col xs={12}>
+								<h2>Your Ethvelopes</h2>
+							</Col>
+							<Col xs={12} md={10} mdOffset={1}>
+								<p>There are different kinds of unique Red Ethvelope designs, and which design you get is completely random! Some are more rare than others, though, so send more Red Ethvelopes to help your friends and family collect them all! Each Red Ethvelope is an ERC-721 compliant token, which means you can also trade with others.</p>
+							</Col>
+						</Row>
+						<br/>
+            <Row>
+              { ethvelopesForAccount.map((ethvelopeId) => (
+                <Col xs={12} md={4} key={ethvelopeId}>
+                  <Ethvelope id={ethvelopeId.toNumber()} />
+                </Col>
+              ))}
+            </Row>
+          </Grid>
         );
       }
     } else {
@@ -64,7 +78,7 @@ EthvelopeList.contextTypes = {
 export default connect((state, ownProps) => {
   return {
     redEthvelopeContract: state.redEthvelopeContract,
-    ethvelopes: state.ethvelopes,
+    accountEthvelopes: state.accountEthvelopes,
     selectedAccount: state.selectedAccount
   }
 }, {

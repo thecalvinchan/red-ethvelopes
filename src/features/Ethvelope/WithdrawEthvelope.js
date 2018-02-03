@@ -16,9 +16,11 @@ class WithdrawEthvelope extends Component {
     console.log(this.props);
     return (
       <div>
-        <label for="value">Amount ETH to withdraw (in wei):</label>
-        <input name="value" value={this.state.amount} onChange={this.handleChange}/>
-        <button onClick={this.props.withdrawEthvelope(this.state.amount)}>Withdraw</button>
+        <label htmlFor="value">Withdraw ETH from Ethvelope:</label>
+				<div className="Ethvelope-form">
+					<input name="value" value={this.state.amount} onChange={this.handleChange} placeholder={0.01}/>
+					<button onClick={this.props.withdrawEthvelope(this.state.amount)}>Withdraw</button>
+				</div>
       </div>
     );
   }

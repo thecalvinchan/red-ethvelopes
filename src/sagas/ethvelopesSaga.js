@@ -5,12 +5,14 @@ function* fetchEthvelopes(action) {
     const { contract, account } = action;
     const ethvelopes = yield contract.tokensOf.call(account);
     yield put({type: 'FETCH_ETHVELOPES_SUCCESS', account, ethvelopes});
-  } catch(e) {
-    yield put({type: 'FETCH_ETHVELOPES_ERROR'});
+  } catch(error) {
+    yield put({
+      type: 'FETCH_ETHVELOPES_ERROR',
+      error
+    });
   }
 };
 
-export default function* ethvelopesSaga() {
+export default function* ethvelopeSaga() {
   yield takeLatest('FETCH_ETHVELOPES', fetchEthvelopes);
 };
-
