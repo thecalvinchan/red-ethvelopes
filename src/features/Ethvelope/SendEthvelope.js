@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactTooltip from 'react-tooltip';
 
 class SendEthvelope extends Component {
   constructor() {
@@ -15,7 +16,8 @@ class SendEthvelope extends Component {
   render() {
     return (
       <div>
-        <label htmlFor="address">Send Ethvelope</label>
+        <label htmlFor="address" data-tip='You can send an ethvelope (along with all of its ETH funds) to another address.'>Send Ethvelope</label>
+        <ReactTooltip/>
         <br/>
 				<div className="Ethvelope-form">
 					<input name="address" value={this.state.address} onChange={this.handleChange} placeholder="0x627306090abaB3A6e1400e9345bC60c78a8BEf57"/>

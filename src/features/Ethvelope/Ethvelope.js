@@ -82,7 +82,7 @@ class Ethvelope extends Component {
       } else {
         return (
           <div className="Ethvelope">
-            <img className="Ethvelope-image" src={ethvelope.metadataUrl.toString()} />
+            <img className="Ethvelope-image" src={`${ethvelope.metadataUrl.toString()}/image`} alt={ethvelope.metadataUrl}/>
             <br/>
             <div className="Ethvelope-actions">
 							<p><strong>Balance:</strong> <code>{convertWeiToEther(ethvelope.balance.toNumber())} ETH</code></p>

@@ -139,6 +139,7 @@ class CreateAndSendEthvelope extends Component {
           </Col>
         </Row>
 				<br/>
+        {this.renderSubtotal()}
 				<Row>
 					<Col xs={10} xsOffset={1} md={6} mdOffset={3}>
 					<button onClick={this.createAndSendEthvelope} className="btn__md btn__fullwidth">Send Ethvelope</button>
@@ -146,6 +147,39 @@ class CreateAndSendEthvelope extends Component {
 				</Row>
       </Grid>
     );
+  }
+
+  renderSubtotal() {
+    if (this.state.amount > 0) {
+      return (
+        <div>
+				<Row>
+          <Col xs={6} className="CreateAndSendEthvelope-label">
+            <label>Ethvelope Fee:</label>
+          </Col>
+          <Col xs={6} className="CreateAndSendEthvelope-input">
+            <code>{this.state.amount * 0.02} ETH</code>
+          </Col>
+				</Row>
+				<Row>
+          <Col xs={10} xsOffset={1} md={6} mdOffset={3}>
+            <hr/>
+          </Col>
+				</Row>
+				<Row>
+          <Col xs={6} className="CreateAndSendEthvelope-label">
+            <label>Your total cost:</label>
+          </Col>
+          <Col xs={6} className="CreateAndSendEthvelope-input">
+            <code>{this.state.amount * 1.02} ETH</code>
+          </Col>
+				</Row>
+				<br/>
+        </div>
+      );
+    } else {
+      return null;
+    }
   }
 
   render () {
