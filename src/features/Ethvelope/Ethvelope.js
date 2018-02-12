@@ -26,7 +26,7 @@ class Ethvelope extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (!this.props.redEthvelopeContract) {
       this.props.fetchRedEthvelopeContract();
     }
@@ -89,7 +89,10 @@ class Ethvelope extends Component {
 							<br/>
               <SendEthvelope sendEthvelope={this.sendEthvelope} />
 							<br/>
-              <WithdrawEthvelope withdrawEthvelope={this.withdrawEthvelope} />
+              <WithdrawEthvelope 
+                balance={ethvelope.balance.toNumber()}
+                withdrawEthvelope={this.withdrawEthvelope}
+              />
             </div>
           </div>
         );

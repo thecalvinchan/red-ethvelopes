@@ -5,7 +5,8 @@ const finney = 1e15;
 contract('RedEthvelope', async (accounts) => {
 	const owner = accounts[0];
 	const recipient = accounts[1];
-	let redEthvelope = await RedEthvelope.deployed();;
+	let redEthvelope = await RedEthvelope.deployed();
+  const watcher = redEthvelope.EthvelopeCreatedAndSent();
 
   context('contract creation', () => {
     it('should have an owner balance of zero', async () => {
@@ -63,6 +64,11 @@ contract('RedEthvelope', async (accounts) => {
       const tokenDnaPromise = redEthvelope.redEthvelopes.call(0);
       const [tokenMetadata, tokenDna] = await Promise.all([tokenMetadataPromise, tokenDnaPromise]);
       assert.equal(tokenMetadata.toString(), `http://127.0.0.1:1234/${tokenDna}`);
+    });
+
+    it('should send an event', async() => {
+      const events = await watcher.get();
+      assert.equal(events.length, 1);
     });
   });
 

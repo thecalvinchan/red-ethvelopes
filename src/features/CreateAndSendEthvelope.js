@@ -14,12 +14,14 @@ const STATUS_READY = 'READY';
 const STATUS_SUCCESS = 'SUCCESS';
 const STATUS_ERROR = 'ERROR';
 
+const ETHVELOPE_FEE = 0.01;
+
 class CreateAndSendEthvelope extends Component {
   constructor() {
     super();
     this.state = {
       recipientAddress: '',
-      amount: null,
+      amount: '',
       status: STATUS_READY,
       message: ''
     };
@@ -44,7 +46,13 @@ class CreateAndSendEthvelope extends Component {
       this.setState({
         status: STATUS_SENDING
       });
-      const tx = await this.props.redEthvelopeContract.createAndSendEthvelope(this.state.recipientAddress, {from: this.context.web3.selectedAccount, value: amount});
+      const tx = await this.props.redEthvelopeContract.createAndSendEthvelope(
+        this.state.recipientAddress,
+        {
+          from: this.context.web3.selectedAccount,
+          value: Number.parseFloat(amount) + ETHVELOPE_FEE
+        }
+      );
       this.setState({
         status: STATUS_SUCCESS,
         message: `Red Ethvelope successfully sent to ${this.state.recipientAddress}`
@@ -158,7 +166,7 @@ class CreateAndSendEthvelope extends Component {
             <label>Ethvelope Fee:</label>
           </Col>
           <Col xs={6} className="CreateAndSendEthvelope-input">
-            <code>{this.state.amount * 0.02} ETH</code>
+            <code>{ETHVELOPE_FEE} ETH</code>
           </Col>
 				</Row>
 				<Row>
@@ -171,7 +179,7 @@ class CreateAndSendEthvelope extends Component {
             <label>Your total cost:</label>
           </Col>
           <Col xs={6} className="CreateAndSendEthvelope-input">
-            <code>{this.state.amount * 1.02} ETH</code>
+            <code>{Number.parseFloat(this.state.amount) + ETHVELOPE_FEE} ETH</code>
           </Col>
 				</Row>
 				<br/>

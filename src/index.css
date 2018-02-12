@@ -91,14 +91,14 @@ p {
 }
 
 a, a:link {
-	color: #FFEC38;
+	color: #8C5B00;
 	text-decoration: underline;
 }
 a:hover, a:visited {
-	color: #8C5B00;
+	color: #E6D100;
 }
 
-button, a.btn {
+button, .btn:link, .btn:visited {
 	background-color: #F0FF99;	
 	border-radius: 0px;	
 	border-top-left-radius: 5px;
@@ -108,18 +108,19 @@ button, a.btn {
 	box-shadow: none;
 	color: #8C5B00;
 	font-weight: 600;
-	padding: 10px;
 	margin-top: 10px;
+	padding: 10px;
+  text-decoration: none;
 }
 
-button.btn__md, a.btn__md {
+.btn__md {
 	border-bottom: 5px solid #FFEC38;
 	font-size: 18px;
 	font-weight: 600;
 	padding: 15px;
 }
 
-button.btn__fullwidth, a.btn__fullwidth {
+.btn__fullwidth {
 	border-bottom: 5px solid #FFEC38;
 	width: 100%;
 }

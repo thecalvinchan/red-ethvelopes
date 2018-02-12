@@ -8,14 +8,17 @@ import Ethvelope from './Ethvelope/Ethvelope';
 import { fetchRedEthvelopeContract, fetchEthvelopes } from './actions';
 
 class EthvelopeList extends Component {
+  watchingForEvents = null;
+
   constructor() {
     super();
     this.state = {
-      ethvelopes: null
+      ethvelopes: null,
+      watchingForEvents: null
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     if (!this.props.redEthvelopeContract) {
       this.props.fetchRedEthvelopeContract();
     }

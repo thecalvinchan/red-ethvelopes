@@ -5,13 +5,14 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
 import { Provider } from 'react-redux';
-import { Web3Provider } from 'react-web3';
+import { BrowserRouter } from 'react-router-dom';
 
 import { applyMiddleware, createStore, combineReducers } from 'redux'; 
 
 import createSagaMiddleware from 'redux-saga';
 
 import contractSaga from './sagas/contractSaga';
+import eventsSaga from './sagas/eventsSaga';
 import ethvelopesSaga from './sagas/ethvelopesSaga';
 import ethvelopeSaga from './sagas/ethvelopeSaga';
 
@@ -101,15 +102,16 @@ store.subscribe(() => {
   console.log("STORE STATE CHANGED", store.getState());
 });
 
-sagaMiddleware.run(contractSaga, store);
-sagaMiddleware.run(ethvelopesSaga, store);
+sagaMiddleware.run(contractSaga);
+sagaMiddleware.run(eventsSaga);
+sagaMiddleware.run(ethvelopesSaga);
 sagaMiddleware.run(ethvelopeSaga);
 
 const WrappedApp = () => (
   <Provider store={store}>
-    <Web3Provider>
+    <BrowserRouter>
       <App />
-    </Web3Provider>
+    </BrowserRouter>
   </Provider>
 )
 

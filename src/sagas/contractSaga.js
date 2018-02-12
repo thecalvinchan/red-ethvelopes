@@ -9,6 +9,7 @@ function* fetchRedEthvelopeContract(action) {
     const { web3 } = window;
     RedEthvelope.setProvider(web3.currentProvider);
     const instance = yield RedEthvelope.deployed();
+    yield put({type: 'EVENTS_WATCH', instance});
     yield put({type: 'CONTRACT_DEPLOYED', instance});
   } catch(e) {
     yield put({type: 'CONTRACT_ERROR'});
@@ -18,4 +19,3 @@ function* fetchRedEthvelopeContract(action) {
 export default function* redEthvelopeContractSaga() {
   yield takeLatest('CONTRACT_FETCH', fetchRedEthvelopeContract);
 };
-
