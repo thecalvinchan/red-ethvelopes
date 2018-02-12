@@ -63,7 +63,6 @@ const selectedAccount = (state = null, action) => {
 }
 
 const ethvelopes = (state = {}, action) => {
-  console.log(action);
   switch (action.type) {
     case 'FETCH_ETHVELOPE_SUCCESS':
       return {
@@ -98,9 +97,6 @@ const rootReducer = (state, action) => {
 }
 
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
-store.subscribe(() => {
-  console.log("STORE STATE CHANGED", store.getState());
-});
 
 sagaMiddleware.run(contractSaga);
 sagaMiddleware.run(eventsSaga);

@@ -5,14 +5,11 @@ function* startWatchingEvents(action) {
     const { instance } = action;
     console.log("Begin listening to contract events");
     console.log(instance);
-    const ethvelopeCreatedAndSentEvent = instance.EthvelopeCreatedAndSent({}, {fromBlock: 0, toBlock: 'latest'});
-    console.log(ethvelopeCreatedAndSentEvent);
-    const events = ethvelopeCreatedAndSentEvent.watch((err, res) => {
+    const ethvelopeCreatedAndSentEvent = instance.EthvelopeCreatedAndSent({}, {fromBlock: 'latest', toBlock: 'latest'}, (err, res) => {
+      console.log("hello");
       console.log(res);
     });
-    console.log(events.get((err, res) => {
-      console.log(res);
-    }));
+    console.log(ethvelopeCreatedAndSentEvent);
   } catch(e) {
     console.log(e);
     yield put({type: 'EVENTS_WATCH_ERROR'});
