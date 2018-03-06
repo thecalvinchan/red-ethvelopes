@@ -1,0 +1,31 @@
+.Ethvelope {
+  text-align: center;
+  position: relative;
+}
+
+.Ethvelope-image {
+  width: 100%;
+}
+
+.Ethvelope-actions {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+	background-color: rgba(255,255,255, 0.85);
+	background-opacity: 0.2;
+}
+
+.Ethvelope:hover .Ethvelope-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Ethvelope-form {
+	display: flex;
+	align-content: baseline;
+}

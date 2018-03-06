@@ -1,0 +1,23 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+  line-height: 80px;
+}
+
+.App-header {
+	background-color: #F0FF99;	
+	color: #8C5B00;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 80px;
+}
+
+.App-header h1 {
+  font-size: 76px;
+}
